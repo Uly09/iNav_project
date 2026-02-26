@@ -22,6 +22,8 @@ TABS.pid_tuning = {
 
 TABS.pid_tuning.initialize = function (callback) {
 
+    GUI.content_ready();
+
     var loadChainer = new MSPChainerClass();
 
     let EZ_TUNE_PID_RP_DEFAULT = [40, 75, 23, 100];
@@ -37,7 +39,15 @@ TABS.pid_tuning.initialize = function (callback) {
 
     loadChainer.setChain(loadChain);
     loadChainer.setExitPoint(load_html);
-    loadChainer.execute();
+
+    if (!GUI.connected) {
+        console.warn("Обход MSP запросов активен");
+        load_html();
+    } else {
+        loadChainer.execute();
+    }
+
+    //loadChainer.execute();
 
     if (GUI.active_tab != 'pid_tuning') {
         GUI.active_tab = 'pid_tuning';

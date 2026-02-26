@@ -1,10 +1,51 @@
 'use strict';
+
+window.FC = require('./fc'); 
+FC.resetState(); // Инициализируем базовые объекты из fc.js
+
+FC.CONFIG = {
+    apiVersion: "2.0.0",
+    flightControllerIdentifier: 'INAV',
+    flightControllerVersion: '8.0.0',
+    armingFlags: 0,
+    i2cError: 0,
+    cycleTime: 0,
+    cpuload: 0,
+    profile: 0,
+    mixer_profile: 0
+};
+FC.apiVersion = "2.0.0";
+
+FC.getPidNames = function() {
+    return ["ROLL", "PITCH", "YAW", "ALT", "POS", "POSR", "NAVR", "LEVEL", "MAG", "VEL", "NAVH"];
+};
+
+// Заполняем массив PIDs (11 строк для iNAV 8.0)
+FC.PIDs = Array(11).fill([40, 30, 23, 100]);
+
+// Базовые рейты
+FC.RC_tuning = {
+    roll_rate: 70, pitch_rate: 70, yaw_rate: 60,
+    RC_EXPO: 0.5, RC_YAW_EXPO: 0.5,
+    dynamic_THR_PID: 30, dynamic_THR_breakpoint: 1500,
+    throttle_MID: 0.5, throttle_EXPO: 0.2
+};
+
+FC.MIXER_CONFIG = { platformType: 1 }; // 1 = MULTIROTOR
+FC.EZ_TUNE = { enabled: 0 };
+FC.RATE_DYNAMICS = { sensitivityCenter: 100, sensitivityEnd: 100 };
+
+FC.isMultirotor = function() { return true; };
+FC.isAirplane = function() { return false; };
+FC.isRpyFfComponentUsed = function() { return true; };
+FC.isRpyDComponentUsed = function() { return true; };
+
 const { dialog } = require("@electron/remote");
 
 const CONFIGURATOR = require('./data_storage');
 const Switchery = require('./libraries/switchery/switchery')
 const MSP = require('./msp');
-const FC = require('./fc');
+//const FC = require('./fc');
 const interval = require('./intervals');
 const { scaleRangeInt } = require('./helpers');
 const i18n = require('./localization');
@@ -24,7 +65,8 @@ var GUI_control = function () {
         'firmware_flasher',
         'mission_control',
         'sitl',
-        'help'
+        'help',
+        'pid_tuning'
     ];
     this.defaultAllowedTabsWhenConnected = [
         'failsafe',
@@ -38,7 +80,7 @@ var GUI_control = function () {
         'logging',
         'onboard_logging',
         'outputs',
-        'pid_tuning',
+        //'pid_tuning',
         'ports',
         'receiver',
         'sensors',
@@ -68,7 +110,6 @@ var GUI_control = function () {
     else if (navigator.appVersion.indexOf("Linux") != -1)   this.operating_system = "Linux";
     else if (navigator.appVersion.indexOf("X11") != -1)     this.operating_system = "UNIX";
     else this.operating_system = "Unknown";
-
 };
 
 // message = string
