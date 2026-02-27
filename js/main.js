@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, Menu, MenuItem, shell } = require('electron');
 const windowStateKeeper = require('electron-window-state');
+const { spawn } = require('child_process');
 const path = require('path');
 const Store = require('electron-store');
 Store.initRenderer();
@@ -20,6 +21,21 @@ let mainWindow = null;
 let bluetoothDeviceChooser = null;
 let btDeviceList = null;
 let selectBluetoothCallback = null;
+let sitlProcess = null;
+
+function startSITL() {
+  // Путь '..' нужен, так как папки inav и iNav_project лежат рядом в GitHub
+  const sitlPath = path.join(__dirname, '..', 'inav', 'build', 'bin', 'SITL.elf');
+  
+  console.log('Запуск SITL по пути:', sitlPath);
+
+  sitlProcess = spawn(sitlPath, ['-t', '127.0.0.1:5760'], {
+    cwd: path.dirname(sitlPath) // Важно для работы с eeprom.bin внутри inav
+  });
+
+  sitlProcess.stdout.on('data', (data) => console.log(`SITL Log: ${data}`));
+  sitlProcess.stderr.on('data', (data) => console.error(`SITL Error: ${data}`));
+}
 
 // In Electron the bluetooth device chooser didn't exist, so we have to build our own
 function createDeviceChooser() {
@@ -53,6 +69,7 @@ function createDeviceChooser() {
 }
 
 app.on('ready', () => {
+  startSITL();
   createWindow();
 });
 
@@ -185,6 +202,11 @@ function createWindow() {
 
 app.on('window-all-closed', () => {
   
+  if (sitlProcess) {
+    sitlProcess.kill();
+    console.log("SITL процесс завершен.");
+  }
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
