@@ -25,11 +25,11 @@ let sitlProcess = null;
 
 function startSITL() {
   // Путь '..' нужен, так как папки inav и iNav_project лежат рядом в GitHub
-  const sitlPath = path.join(__dirname, '..', 'inav', 'build', 'bin', 'SITL.elf');
+  const sitlPath = path.join(__dirname, '..', '..', 'inav', 'build', 'bin', 'SITL.elf');
   
   console.log('Запуск SITL по пути:', sitlPath);
 
-  sitlProcess = spawn(sitlPath, ['-t', '127.0.0.1:5760'], {
+  sitlProcess = spawn(sitlPath, ['127.0.0.1:5760'], {
     cwd: path.dirname(sitlPath) // Важно для работы с eeprom.bin внутри inav
   });
 
