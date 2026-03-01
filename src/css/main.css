@@ -806,7 +806,7 @@ li.active .ic_led {
     background-image: url("./../../images/icons/cf_icon_led_white.svg");
 }
 
-.ic_sensors {
+/* .ic_sensors {
     background-image: url("./../../images/icons/cf_icon_sensors_grey.svg");
 }
 
@@ -816,7 +816,7 @@ li.active .ic_led {
 
 li.active .ic_sensors {
     background-image: url("./../../images/icons/cf_icon_sensors_white.svg");
-}
+} */
 
 .ic_log {
     background-image: url("./../../images/icons/cf_icon_log_grey.svg");
@@ -985,6 +985,14 @@ li.active .ic_advanced {
 
 li.active .ic_mission {
     background-image: url("./../../images/icons/cf_icon_mission_white.svg");
+}
+
+.ic_monitoring {
+    background-image: url("./../../images/icons/cf_icon_sensors_grey.svg");
+}
+
+.ic_monitoring:hover, li.active .ic_monitoring {
+    background-image: url("./../../images/icons/cf_icon_sensors_white.svg");
 }
 
 .ic_mixer {
@@ -2070,14 +2078,14 @@ select {
     color: #aaa;
 }
 
-.ic_osd {
+/* .ic_osd {
     background-image: url("./../../images/icons/icon_osd.svg");
     background-position-y: 4px;
 }
 
 .ic_osd:hover, li.active .ic_osd {
     background-image: url("./../../images/icons/icon_osd_white.svg");
-}
+} */
 
 .full-width {
     width: 100% !important;

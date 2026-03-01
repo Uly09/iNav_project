@@ -172,6 +172,9 @@
     "tabSitl": {
         "message": "SITL"
     },
+    "tabMonitoring": {
+        "message": "モニタリング"
+    },
     "sitlDemoMode": {
         "message": "デモモード"
     },

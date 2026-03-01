@@ -171,6 +171,9 @@
     "tabSitl": {
         "message": "SITL"
     },
+    "tabMonitoring": {
+        "message": "监察工作"
+    },
     "sitlDemoMode": {
         "message": "演示模式"
     },
