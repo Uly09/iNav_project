@@ -285,6 +285,9 @@ $(function() {
                             require('./../tabs/search');
                             TABS.search.initialize(content_ready);
                             break;
+                        case 'monitoring':
+                            require('./../tabs/monitoring');
+                            TABS.monitoring.initialize(content_ready);
                         default:
                             console.log('Tab not found:' + tab);
                     }

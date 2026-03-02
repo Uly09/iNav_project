@@ -51,7 +51,8 @@ var GUI_control = function () {
         'mixer',
         'programming',
         'ez_tune',
-        'search'
+        'search',
+        'monitoring'
     ];
     this.allowedTabs = this.defaultAllowedTabsWhenDisconnected;
 
