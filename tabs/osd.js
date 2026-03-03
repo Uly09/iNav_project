@@ -3461,14 +3461,14 @@ HARDWARE.update = function(callback) {
 };
 
 TABS.osd = {};
-TABS.osd.initialize = function (callback) {
+TABS.osd.initializeAsSubtab = function (callback) {
 
     mspHelper.loadServoMixRules();
     mspHelper.loadLogicConditions();
 
-    if (GUI.active_tab != 'osd') {
-        GUI.active_tab = 'osd';
-    }
+    // if (GUI.active_tab != 'osd') {
+    //     GUI.active_tab = 'osd';
+    // }
 
     function save_to_eeprom() {
         console.log('save_to_eeprom');
@@ -3478,7 +3478,7 @@ TABS.osd.initialize = function (callback) {
     }
 
     HARDWARE.update(function () {
-        GUI.load(path.join(__dirname, "osd.html"), Settings.processHtml(function () {
+        // GUI.load(path.join(__dirname, "osd.html"), Settings.processHtml(function () {
             // translate to user-selected language
            i18n.localize();
 
@@ -3652,7 +3652,7 @@ TABS.osd.initialize = function (callback) {
             }
 
             GUI.content_ready(callback);
-        }));
+        // }));
     });
 };
 

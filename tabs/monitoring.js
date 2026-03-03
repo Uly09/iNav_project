@@ -2,64 +2,48 @@
 
 const path = require('path');
 const { GUI, TABS } = require('./../js/gui');
-const MSP = require('./../js/msp');
-const MSPCodes = require('./../js/msp/MSPCodes');
-const interval = require('./../js/intervals');
+const Settings = require('./../js/settings');
 const i18n = require('./../js/localization');
+const tabs = require('./../js/tabs');
 
-TABS.monitoring = {
-    activeSubtab: 'osd' // Храним текущую активную подвкладку
-};
+TABS.monitoring = {};
 
 TABS.monitoring.initialize = function (callback) {
-    const self = this;
+    if (GUI.active_tab !== 'monitoring') {
+        GUI.active_tab = 'monitoring';
+    }
 
-    GUI.load(path.join(__dirname, "monitoring.html"), function() {
-        $('.subtab__header_label').on('click', function () {
-            const target = $(this).attr('for');
-            
-            $('.subtab__header_label').removeClass('subtab__header_label--current');
-            $(this).addClass('subtab__header_label--current');
-
-            $('.subtab__content').removeClass('subtab__content--current');
-            $('#' + target).addClass('subtab__content--current');
-
-            self.activeSubtab = target.replace('subtab-', '');
-            
-            handleSubtabChange(self.activeSubtab);
-        });
-
-        $('.refresh_btn a').on('click', function () {
-            GUI.updateActivatedTab();
-        });
-
+    // Загружаем основную структуру мониторинга
+    GUI.load(path.join(__dirname, "monitoring.html"), Settings.processHtml(function() {
         i18n.localize();
-        handleSubtabChange(self.activeSubtab);
-        GUI.content_ready(callback);
-    });
 
-    function handleSubtabChange(subtabId) {
-        if (subtabId === 'sensors') {
-            interval.add("monitoringSensors", updateSensors, 100);
-        } else {
-            interval.remove("monitoringSensors");
-        }
-    }
+        // Инициализируем механизм переключения подвкладок (как в pid_tuning)
+        tabs.init($('.tab-monitoring'));
 
-    function updateSensors() {
-        MSP.send_message(MSPCodes.MSP_RAW_IMU, false, false, function (msg) {
-            const data = msg.data;
+        // Определяем контейнер, куда будет загружен OSD
+        const $osdContainer = $('#osd-subtab-container');
+
+        // Загружаем контент OSD динамически
+        $osdContainer.load(path.join(__dirname, "osd.html"), function() {
+            // Локализация свежезагруженного контента
+            i18n.localize();
+
+            // Проверяем наличие логики OSD и запускаем её как подвкладку
+            if (TABS.osd && typeof TABS.osd.initializeAsSubtab === 'function') {
+                TABS.osd.initializeAsSubtab(callback);
+            } else {
+                // Если специфической функции нет, сообщаем GUI, что контент готов
+                GUI.content_ready(callback);
+            }
         });
-    }
-
-    function updateUI(ax, ay, az, gx, gy, gz) {
-        $('#stat-accel .value').text(`${ax}, ${ay}, ${az}`);
-        $('#stat-gyro .value').text(`${gx}, ${gy}, ${gz}`);
-    }
+    }));
 };
 
 TABS.monitoring.cleanup = function (callback) {
-    interval.remove("monitoringSensors");
+    // Очистка ресурсов OSD при переходе на другую вкладку
+    if (TABS.osd && typeof TABS.osd.cleanup === 'function') {
+        TABS.osd.cleanup();
+    }
     
     if (callback) {
         callback();
