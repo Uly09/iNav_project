@@ -15,12 +15,12 @@ const i18n = require('./../js/localization');
 const BitHelper = require('./../js/bitHelper');
 
 TABS.sensors = {};
-TABS.sensors.initialize = function (callback) {
+TABS.sensors.initializeAsSubtab = function (callback) {
     var self = this;
 
-    if (GUI.active_tab != 'sensors') {
-        GUI.active_tab = 'sensors';
-    }
+    //if (GUI.active_tab != 'sensors') {
+    //    GUI.active_tab = 'sensors';
+    //}
 
     function initSensorData(){
         for (var i = 0; i < 3; i++) {
@@ -211,7 +211,7 @@ TABS.sensors.initialize = function (callback) {
         }
     }
 
-    GUI.load(path.join(__dirname, "sensors.html"), function load_html() {
+    //GUI.load(path.join(__dirname, "sensors.html"), function load_html() {
         // translate to user-selected language
        i18n.localize();;
 
@@ -561,7 +561,7 @@ TABS.sensors.initialize = function (callback) {
         });
 
         GUI.content_ready(callback);
-    });
+    //});
 };
 
 TABS.sensors.cleanup = function (callback) {

@@ -13,26 +13,30 @@ TABS.monitoring.initialize = function (callback) {
         GUI.active_tab = 'monitoring';
     }
 
-    // Загружаем основную структуру мониторинга
     GUI.load(path.join(__dirname, "monitoring.html"), Settings.processHtml(function() {
         i18n.localize();
 
-        // Инициализируем механизм переключения подвкладок (как в pid_tuning)
         tabs.init($('.tab-monitoring'));
 
-        // Определяем контейнер, куда будет загружен OSD
-        const $osdContainer = $('#osd-subtab-container');
+        const $osdContainer = $('#subtab-osd');
+        const $sensorsContainer = $('#subtab-sensors');
 
-        // Загружаем контент OSD динамически
         $osdContainer.load(path.join(__dirname, "osd.html"), function() {
-            // Локализация свежезагруженного контента
             i18n.localize();
 
-            // Проверяем наличие логики OSD и запускаем её как подвкладку
             if (TABS.osd && typeof TABS.osd.initializeAsSubtab === 'function') {
                 TABS.osd.initializeAsSubtab(callback);
             } else {
-                // Если специфической функции нет, сообщаем GUI, что контент готов
+                GUI.content_ready(callback);
+            }
+        });
+
+        $sensorsContainer.load(path.join(__dirname, "sensors.html"), function() {
+            i18n.localize();
+
+            if (TABS.sensors && typeof TABS.sensors.initializeAsSubtab === 'function') {
+                TABS.sensors.initializeAsSubtab(callback);
+            } else {
                 GUI.content_ready(callback);
             }
         });
@@ -40,9 +44,13 @@ TABS.monitoring.initialize = function (callback) {
 };
 
 TABS.monitoring.cleanup = function (callback) {
-    // Очистка ресурсов OSD при переходе на другую вкладку
+    
     if (TABS.osd && typeof TABS.osd.cleanup === 'function') {
         TABS.osd.cleanup();
+    }
+
+    if (TABS.sensors && typeof TABS.sensors.cleanup === 'function') {
+        TABS.sensors.cleanup();
     }
     
     if (callback) {

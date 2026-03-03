@@ -1,18 +1,19 @@
+<div id="content-watermark"></div>
 <div class="tab-monitoring toolbar_fixed_bottom">
-    <div class="content_wrapper">
+    <div id="monitoring-wrapper" class="content_wrapper">
         <div class="tab_title subtab__header">
             <span class="subtab__header_label subtab__header_label--current" for="subtab-osd" data-i18n="tabOSD"></span>
             <span class="subtab__header_label" for="subtab-sensors" data-i18n="tabRawSensorData"></span>
+        </div>  
+        <div id="subtab-osd" class="subtab__content subtab__content--current tab-osd"></div>
+        <div id="subtab-sensors" class="subtab__content tab-sensors"></div>
+    </div>
+    <div class="content_toolbar supported hide">
+        <div class="btn">
+            <a class="active save" href="#" data-i18n="save"></a>
         </div>
-
-        <div id="subtab-osd" class="subtab__content subtab__content--current">
-            <div id="osd-subtab-container"></div>
-        </div>
-
-        <div id="subtab-sensors" class="subtab__content">
-            <div id="sensors-subtab-container">
-                <p>Содержимое датчиков...</p>
-            </div>
+        <div class="btn">
+            <a class="fonts" id="fontmanager" href="#" data-i18n="osd_font_manager"></a>
         </div>
     </div>
 </div>
