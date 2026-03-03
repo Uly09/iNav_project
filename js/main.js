@@ -23,20 +23,6 @@ let btDeviceList = null;
 let selectBluetoothCallback = null;
 let sitlProcess = null;
 
-function startSITL() {
-  // Путь '..' нужен, так как папки inav и iNav_project лежат рядом в GitHub
-  const sitlPath = path.join(__dirname, '..', '..', 'inav', 'build', 'bin', 'SITL.elf');
-  
-  console.log('Запуск SITL по пути:', sitlPath);
-
-  sitlProcess = spawn(sitlPath, ['127.0.0.1:5760'], {
-    cwd: path.dirname(sitlPath) // Важно для работы с eeprom.bin внутри inav
-  });
-
-  sitlProcess.stdout.on('data', (data) => console.log(`SITL Log: ${data}`));
-  sitlProcess.stderr.on('data', (data) => console.error(`SITL Error: ${data}`));
-}
-
 // In Electron the bluetooth device chooser didn't exist, so we have to build our own
 function createDeviceChooser() {
   bluetoothDeviceChooser = new BrowserWindow({
@@ -69,7 +55,6 @@ function createDeviceChooser() {
 }
 
 app.on('ready', () => {
-  startSITL();
   createWindow();
 });
 
